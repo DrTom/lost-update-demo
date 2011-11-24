@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  balance: 1
+  _update_token: 1
+
+two:
+  balance: 1
+  _update_token: 1
