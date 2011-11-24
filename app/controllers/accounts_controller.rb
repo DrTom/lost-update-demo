@@ -42,7 +42,6 @@ class AccountsController < ApplicationController
   def create
     @account = Account.new(params[:account])
 
-    @account._update_token = Random.rand(2**31-2)
     respond_to do |format|
       if @account.save
         format.html { redirect_to @account, notice: 'Account was successfully created.' }
@@ -58,15 +57,13 @@ class AccountsController < ApplicationController
   # PUT /accounts/1.json
   def update
 
+    @account = Account.find(params[:id])
+
     updated=
       Account.transaction do
         ActiveRecord::Base.connection.execute "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
-        @account = Account.find(params[:id])
-        if @account._update_token == params[:account]["_update_token"].to_i
-          @account.update_attributes(params[:account].update({"_update_token" => Random.rand(2**31-2)}))
-        else
-          false
-        end
+        neg_update_token = - params[:account]["_update_token"].to_i
+        @account.update_attributes(params[:account].update({"_update_token" => neg_update_token}))
       end 
 
     respond_to do |format|
